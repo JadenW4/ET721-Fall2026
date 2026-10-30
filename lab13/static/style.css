@@ -1,15 +1,21 @@
-*{box-sizing: border-box;}
-/* base.html*/
-.title{
-    text-align: center; color: darkblue;
+* {
+    box-sizing: border-box;
 }
-.maincontainer{
+
+/* base.html */
+.title {
+    text-align: center;
+    color: darkblue;
+}
+
+.maincontainer {
     width: 800px;
     margin: 3rem auto;
     padding: 1rem;
     border: solid 1px lightgray;
 }
-.footer{
+
+.footer {
     background-color: rgb(1,1,80);
     color: aliceblue;
     padding: 1rem 2rem;
@@ -17,19 +23,24 @@
 }
 
 /* index.html */
-.subtitle{
-    text-align: center; color: darkblue;
+.subtitle {
+    text-align: center;
+    color: darkblue;
 }
-form{
-    width: 50%; margin: 2rem auto;
+
+form {
+    width: 50%;
+    margin: 2rem auto;
 }
-input, textarea{
+
+input, textarea {
     width: 100%;
     display: block;
     margin-bottom: 1rem;
     padding: 0.5rem 1rem;
 }
-button{
+
+button {
     width: 100%;
     display: block;
     margin-top: 1rem;
@@ -39,14 +50,15 @@ button{
     background-color: darkblue;
     color: whitesmoke;
 }
-button:hover{
+
+button:hover {
     background-color: crimson;
     cursor: pointer;
     font-weight: bolder;
 }
 
-/* blogs.html*/
-.blogseparator{
+/* blogs.html */
+.blogseparator {
     border-bottom: 1px ridge lightgray;
     margin-bottom: 1rem;
 }
