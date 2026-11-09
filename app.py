@@ -1,68 +1,52 @@
-from flask import Flask, render_template, redirect, url_for, request
-from flask_sqlalchemy import SQLAlchemy
-
-import mysql.connector
+from flask import Flask, request, jsonify, render_template
+from itertools import count
 
 app = Flask(__name__)
+items = {
+    "1": {"name": "computer", "price": 980},
+    "2": {"name": "bookbag", "price": 135},
+    "3": {"name": "Jaden", "price": 42},
+}
+next_id = count(4)
+STUDENT_NAME = "Jaden Wiltshire"
 
-# database connection
-def get_db_connection():
-    return mysql.connector.connect(
-        host = '127.0.0.1',
-        user = 'flaskuser',
-        password = 'password123',
-        database = "blogDB"
-    )
+@app.context_processor
+def student_context():
+    return {"student_name": STUDENT_NAME}
 
 @app.route('/')
-def index():
+def home():
     return render_template('index.html')
 
-# collects all data in the blog and users table and displays it on the blogs.html page
-@app.route('/blogs')
-def blogs():
-    connection = get_db_connection()
-    try:
-        cursor = connection.cursor()
-        try:
-            cursor.execute("SELECT blog.id, users.username, blog.title, blog.content, blog.created_at FROM blog JOIN users ON blog.user_id = users.userid")
-            data = cursor.fetchall()
-        finally:
-            cursor.close()
-    finally:
-        connection.close()
+@app.route('/items', methods=['POST', 'GET'])
+def collection():
+    if request.method == 'GET':
+        return jsonify(items)
+    data = request.get_json(silent=True) or {}
+    name, price = data.get('name'), data.get('price')
+    if not isinstance(name, str) or not name.strip() or isinstance(price, bool) or not isinstance(price, (int, float)) or price < 0:
+        return jsonify(error='Provide a name and a nonnegative numeric price.'), 400
+    item_id = str(next(next_id))
+    items[item_id] = {'name': name.strip(), 'price': price}
+    return jsonify(id=item_id, item=items[item_id]), 201
 
-    return render_template('blogs.html', blogs = data)
-
-# add a new blog post to the database
-@app.route('/add_blog', methods=['GET', 'POST'])
-def add_blog():
-    if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
-        username = request.form['username']
-        email = request.form['email']
-
-        connection = get_db_connection()
-        try:
-            cursor = connection.cursor()
-            try:
-                cursor.execute("INSERT INTO users(username, email) VALUES (%s, %s)", (username, email))
-                connection.commit()
-
-                # store the user_id of the newly inserted user
-                user_id = cursor.lastrowid
-
-                # insert the blog post into the blog table with the user_id
-                cursor.execute("INSERT INTO blog(user_id, title, content) VALUES (%s, %s, %s)", (user_id, title, content))
-                connection.commit()
-            finally:
-                cursor.close()
-        finally:
-            connection.close()
-
-        return redirect(url_for('blogs'))
-
+@app.route('/items/<item_id>', methods=['GET', 'PUT', 'DELETE'])
+def handle_item(item_id):
+    if item_id not in items:
+        if request.method == 'GET':
+            return jsonify(error='Item not found'), 404
+        return render_template('error.html', message='Item not found', item_id=item_id), 404
+    if request.method == 'GET':
+        return jsonify(items[item_id])
+    if request.method == 'DELETE':
+        deleted_item = items.pop(item_id)
+        return render_template('delete.html', item_id=item_id, deleted_item=deleted_item)
+    data = request.get_json(silent=True) or {}
+    name, price = data.get('name'), data.get('price')
+    if not isinstance(name, str) or not name.strip() or isinstance(price, bool) or not isinstance(price, (int, float)) or price < 0:
+        return render_template('error.html', message='Invalid item name or price', item_id=item_id), 400
+    items[item_id] = {'name': name.strip(), 'price': price}
+    return render_template('update.html', item_id=item_id, item=items[item_id])
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,38 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Form</title>
-    <link rel="stylesheet" href="{{url_for('static', filename = 'style.css')}}">
-</head>
-<body>
-    <h1 class="title">Student's full name</h1>
-    <main class="container">
-        <h2>Add Employee</h2>
-        <form method="POST">
-            <div>
-                <label for="employeename">Name: </label>
-                <input type="text" name="empname" id="employeename" required>
-            </div>
-
-            <div>
-                <label for="employeeage">Age: </label>
-                <input type="number" name = "age" id="employeeage" required>
-            </div>
-
-            <div>
-                <button type="submit">SUBMIT</button>
-            </div>
-        </form>
-
-        <div class="dbmsg">
-            <p>{{msg}}</p>
-        </div>
-    </main>
-
-    <footer class="footer">
-        Mini Form App @ October 2026 by Student's full name
-    </footer>
-</body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Item Manager | Home</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><header class="site-header"><div class="wrap header-inner"><div class="brand">◆ ITEM<span>MANAGER</span></div><span class="student">Created by {{ student_name }}</span></div></header>
+<main class="wrap"><section class="hero"><div class="eyebrow">FLASK CRUD APPLICATION</div><h1>Manage your items,<br><em>beautifully simple.</em></h1><p>Add, view, update, and delete items in one easy-to-use dashboard.</p><div class="hero-tag">Student project · {{ student_name }}</div></section>
+<div class="layout"><section class="panel"><div class="panel-heading"><div><span class="eyebrow">01 / CREATE</span><h2>Add a new item</h2></div><span class="icon-circle">＋</span></div><form id="itemForm"><label for="name">Item name</label><input id="name" type="text" placeholder="e.g. computer" required><label for="price">Price ($)</label><input id="price" type="number" min="0" step="0.01" placeholder="e.g. 980" required><button class="btn primary" type="submit">＋ Add item</button></form><p id="response" class="feedback" role="status"></p></section>
+<section class="panel list-panel"><div class="panel-heading"><div><span class="eyebrow">02 / INVENTORY</span><h2>Your items <span id="itemCount" class="count">0</span></h2></div><button class="btn secondary" type="button" onclick="loaditems()">↻ Load Items</button></div><p class="hint">Click Load Items to refresh your inventory.</p><ul class="itemslist"><li class="empty">No items loaded yet. Click <strong>Load Items</strong> to get started.</li></ul></section></div>
+<section class="panel update-panel" id="updatasection" hidden><div class="panel-heading"><div><span class="eyebrow">03 / EDIT</span><h2>Update selected item</h2></div></div><input type="hidden" id="updateID"><div class="update-fields"><div><label for="updateName">Item name</label><input id="updateName" type="text" required></div><div><label for="updatePrice">Price ($)</label><input id="updatePrice" type="number" min="0" step="0.01" required></div></div><button class="btn primary" type="button" onclick="updateItem()">Save update</button><button class="btn text-btn" type="button" onclick="hideUpdateForm()">Cancel</button></section>
+</main><footer>Item Manager · {{ student_name }} · Flask / JavaScript / CSS</footer><script src="{{ url_for('static', filename='app_script.js') }}"></script></body></html>
